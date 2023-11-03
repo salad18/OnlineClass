@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/OnlineClass.iml" filepath="$PROJECT_DIR$/.idea/OnlineClass.iml" />
-      <module fileurl="file://$PROJECT_DIR$/xuecheng-plus-parent/xuecheng-plus-parent.iml" filepath="$PROJECT_DIR$/xuecheng-plus-parent/xuecheng-plus-parent.iml" />
     </modules>
   </component>
 </project>
