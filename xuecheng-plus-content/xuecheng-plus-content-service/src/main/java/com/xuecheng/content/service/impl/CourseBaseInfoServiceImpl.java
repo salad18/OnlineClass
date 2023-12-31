@@ -107,6 +107,8 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 //        courseBase.setName(dto.getName());
         // 使用简单方法
         BeanUtils.copyProperties(dto, courseBase); // 只要属性名称一样就可以拷贝
+
+
         courseBase.setCompanyId(companyId);
         courseBase.setCreateDate(LocalDateTime.now());
         // 审核状态默认未提交
@@ -128,15 +130,18 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         Long id = courseBase.getId();
         courseMarket.setId(id);
         // 保存营销信息
-        savveCourseMarket(courseMarket);
-        return null;
+        int i = saveCourseMarket(courseMarket);
+        if (i <= 0) {
+            throw new RuntimeException("保存失败");
+        }
+        return getCourseBaseInfo(id);
     }
 
     // 保存营销信息
-    public int savveCourseMarket(CourseMarket courseMarket) {
+    public int saveCourseMarket(CourseMarket courseMarket) {
         // 参数合法校验
         String charge = courseMarket.getCharge();
-        if (StringUtils.isNotEmpty(charge)) {
+        if (StringUtils.isEmpty(charge)) {
             throw new RuntimeException("收费规则为空");
         }
         if (charge.equals("201001")) {
@@ -149,14 +154,13 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         CourseMarket courseMarketOld = courseMarketMapper.selectById(id);
         if (courseMarketOld == null) {
             // 插入数据
-            courseMarketMapper.insert(courseMarket);
+            return courseMarketMapper.insert(courseMarket);
         } else {
             // 更新
             BeanUtils.copyProperties(courseMarket, courseMarketOld);
             courseMarket.setId(courseMarket.getId());
-            courseMarketMapper.updateById(courseMarketOld);
+            return courseMarketMapper.updateById(courseMarketOld);
         }
-        return 0;
     }
 
     // 查询课程信息
@@ -173,7 +177,9 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         // 组合信息
         CourseBaseInfoDto courseBaseInfoDto = new CourseBaseInfoDto();
         BeanUtils.copyProperties(courseBase, courseBaseInfoDto);
-        BeanUtils.copyProperties(courseMarket, courseBaseInfoDto);
+        if (courseMarket != null) {
+            BeanUtils.copyProperties(courseMarket, courseBaseInfoDto);
+        }
 
         //todo:课程分类名称
 //        CourseCategory courseCategory = courseCategoryMapper.selectById(courseId);
