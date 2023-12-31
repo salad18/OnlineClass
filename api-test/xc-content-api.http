@@ -27,7 +27,7 @@ Content-Type: application/json
   "mt": "1-1",
   "st": "1-1-1",
   "name": "",
-  "pic": "asdfafd",
+  "pic": "",
   "teachmode": "200002",
   "users": "初级人员",
   "tags": "dfs",
