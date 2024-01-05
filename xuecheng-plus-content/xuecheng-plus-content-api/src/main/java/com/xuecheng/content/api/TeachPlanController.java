@@ -1,14 +1,13 @@
 package com.xuecheng.content.api;
 
+import com.xuecheng.content.model.dto.SaveTechplanDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
 import com.xuecheng.content.service.TeachplanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +30,12 @@ public class TeachPlanController {
     @GetMapping("/teachplan/{courseId}/tree-nodes")
     public List<TeachplanDto> getTreeNodes(@PathVariable Long courseId) {
         return teachplanService.findTeachplanTree(courseId);
+    }
+
+    @ApiOperation("课程计划创建和修改")
+    @PostMapping("/teachplan")
+    public void saveTeachplan(@RequestBody SaveTechplanDto teachplan) {
+        //
+        teachplanService.saveTeachplan(teachplan);
     }
 }
