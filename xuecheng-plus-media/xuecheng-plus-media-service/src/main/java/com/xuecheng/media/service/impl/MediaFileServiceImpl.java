@@ -15,6 +15,7 @@ import com.xuecheng.media.model.dto.UploadFileResultDto;
 import com.xuecheng.media.model.po.MediaFiles;
 import com.xuecheng.media.service.MediaFileService;
 import io.minio.*;
+import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -339,7 +340,15 @@ public class MediaFileServiceImpl implements MediaFileService {
     private void clearChunkFiles(String chunkFileFolderPath,int chunkTotal) {
         List<DeleteObject> objects = Stream.iterate(0, i -> ++i).limit(chunkTotal).map(i -> new DeleteObject(chunkFileFolderPath + i)).collect(Collectors.toList());
         RemoveObjectsArgs removeObjectsArgs = RemoveObjectsArgs.builder().bucket(bucket_videofiles).objects(objects).build();
-        minioClient.removeObjects(removeObjectsArgs);
+        Iterable<Result<DeleteError>> results = minioClient.removeObjects(removeObjectsArgs);
+        // 真正删除
+        results.forEach(f->{
+            try {
+                DeleteError deleteError = f.get();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
